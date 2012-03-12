@@ -1,1 +1,17 @@
+--*- mode: Org; -*--
+
 My Emacs Config files
+
+* Setup Instructions:
+
+** To set it up on your computer, just symlink the .emacs.d/, .emacs, etc. files to your home folder.
+
+** Or if you don't want all that hassle, just copy it to your home folder.
+
+** In the .emacs file:
+
+   Replace occurrences of
+
+   - the word "pradeep" with your username on your home computer, and 
+
+   - the word "spradeep" with your DCF login (if you're an IITian, else this doesn't apply).

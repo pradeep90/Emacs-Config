@@ -1,0 +1,8 @@
+#name : function template
+#contributor : Xah Lee + SPK's modifications
+# --
+(defun $1 ($2)
+  "$3"
+  (interactive)
+  ($0)			
+)

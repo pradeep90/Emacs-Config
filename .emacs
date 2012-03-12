@@ -127,6 +127,8 @@ Possible values of location - 'home', 'iit', 'other'."
 (defun my-home-color-theme-initialize ()
   "Initialize color themes package and load theme for laptop"
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/emacs-goodies-el/")
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/")
+
   (require 'color-theme)
   (color-theme-initialize)
   ;; (load-file "~/.emacs.d/themes/color-theme-blackboard.el")
@@ -446,7 +448,6 @@ No prefix if arg is passed."
   (org-insert-time-stamp (current-time) nil nil (if (not arg)
 						    ""
 						  "- ")))
-;; Have a function to indent a function
 (defun my-indent-defun ()
   "Indent the function point is in."
   (interactive)
@@ -458,6 +459,13 @@ No prefix if arg is passed."
   "Capitalize arg words before point. By default, capitalize one word."
   (interactive "P")
   (capitalize-word (if arg
+		       (- arg)
+		     -1)))
+
+(defun my-backward-upcase-word (&optional arg)
+  "Upcase arg words before point. By default, upcase one word."
+  (interactive "P")
+  (upcase-word (if arg
 		       (- arg)
 		     -1)))
 
@@ -554,6 +562,9 @@ No prefix if arg is passed."
 
 ;;; <2011-05-19 Thu> 
 (global-set-key (kbd "M-p") 'my-backward-capitalize-word)
+
+;;; <2012-03-11 Sun> 
+(global-set-key (kbd "M-C") 'my-backward-upcase-word)
 
 ;;}}}
 
@@ -810,10 +821,6 @@ With arg, insert result into buffer."
 ;; (add-to-list 'load-path "/home/pradeep/.emacs.d/ecb-2.40") 
 ;; (require 'ecb)
 
-;; (defun My-C-Compile-and-Run ()
-;;   "My-C-Compile-and-Run"
-;;   (compile "gcc ))
-
 ;;}}}
 
 ;;{{{ Programming functions
@@ -961,8 +968,21 @@ http://stackoverflow.com/questions/12492/pretty-printing-xml-files-on-emacs. "
 ;; (add-hook 'compilation-mode-hook 'next-error-follow-minor-mode)
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
+;;; <2012-03-08 Thu> - DoxyMacs 
+(cond ((equal (current-location) 'home)
+       (add-to-list 'load-path "/usr/share/emacs/site-lisp/doxymacs/")
+       (require 'doxymacs)
+       (add-hook 'c-mode-common-hook 'doxymacs-mode)
+       (defun my-doxymacs-font-lock-hook ()
+	 (if (or (eq major-mode 'c-mode)
+		 (eq major-mode 'c++-mode)
+		 (eq major-mode 'java-mode))
+	     (doxymacs-font-lock)))
+       (add-hook 'font-lock-mode-hook 'my-doxymacs-font-lock-hook)))	
+
 (cond ((or (equal (current-location) 'home)
 	   (equal (current-location) 'iit))
+
        ;; YASnippet
        (add-to-list 'load-path
 		    "~/.emacs.d/plugins/yasnippet-0.6.1c")
@@ -1331,7 +1351,7 @@ context-help to false"
       (vimpulse-define-key 'folding-mode 'vi-state (kbd "TAB")
 			   'folding-toggle-show-hide)
       (vimpulse-define-key 'folding-mode 'vi-state (kbd "<C-tab>")
-			   'C-c C-y runs the command folding-show-current-subtree)
+			   'folding-show-current-subtree)
       (vimpulse-map (kbd "z j") 'folding-next-visible-heading)
       (vimpulse-map (kbd "z k") 'folding-previous-visible-heading)
       (vimpulse-map (kbd "z f") 'folding-fold-region)
